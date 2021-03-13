@@ -1,0 +1,14 @@
+note over browser
+browser triggers form event handler
+- prevents default behaviour (i.e. a GET request)
+- creates new note object from user input
+- adds to notes list and rerenders the list
+- sends the new note to the server using JSON format
+end note
+browser->server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+
+note over server
+server adds the new note to its local notes list
+end note
+
+server-->browser: HTTP 201
