@@ -2,7 +2,7 @@ import React from 'react'
 
 const Header = ({ course }) => {
   return (
-    <h1>{course.name}</h1>
+    <h2>{course.name}</h2>
   )
 }
 
@@ -33,7 +33,6 @@ const Total = ({total}) => {
 }
 
 const Course = ({ course }) => {
-
   const total = course.parts.reduce((sum, current) => sum + current.exercises, 0)
 
   return (
