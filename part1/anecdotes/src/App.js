@@ -26,7 +26,6 @@ const App = () => {
 
   const handleClick = () => {
     const r = Math.floor(Math.random() * anecdotes.length)
-    console.log(anecdotes[r])
     setSelected(r)
   }
 
