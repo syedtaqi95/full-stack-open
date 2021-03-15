@@ -3,32 +3,35 @@ import React, { useState } from 'react'
 const Number = ({ person }) => {
   return (
     <div>
-      {person.name}
+      {person.name} {person.number}
     </div>
   )
 }
 
 const App = () => {
   const [persons, setPersons] = useState([
-    { name: 'Arto Hellas' }
+    { name: 'Arto Hellas', number:'040-1234567' }
   ])
   const [newName, setNewName] = useState('')
+  const [newNumber, setNewNumber] = useState('')
 
   const addNumber = (e) => {
     e.preventDefault()
 
-    const newNumber = { name: newName }
+    const newEntry = { name: newName, number: newNumber}
 
     if (persons.some(p => p.name === newName)) {
       alert(`${newName} is already added to phonebook`)
     }
     else {
-      setPersons(persons.concat(newNumber))
+      setPersons(persons.concat(newEntry))
       setNewName("")
+      setNewNumber("")
     }
   }
 
   const handleNewName = (e) => setNewName(e.target.value)
+  const handleNewNumber = (e) => setNewNumber(e.target.value)
 
   return (
     <div>
@@ -36,6 +39,7 @@ const App = () => {
       <form onSubmit={addNumber}>
         <div>
           name: <input autoFocus value={newName} onChange={handleNewName} />
+          number: <input value={newNumber} onChange={handleNewNumber} />
         </div>
         <div>
           <button type="submit">add</button>
