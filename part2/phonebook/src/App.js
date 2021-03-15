@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-const Number = ({person}) => {
+const Number = ({ person }) => {
   return (
     <div>
       {person.name}
@@ -17,16 +17,22 @@ const App = () => {
   const addNumber = (e) => {
     e.preventDefault()
 
-    const newNumber = { name: newName}
-    setPersons(persons.concat(newNumber))
-    setNewName("")
+    const newNumber = { name: newName }
+
+    if (persons.some(p => p.name === newName)) {
+      alert(`${newName} is already added to phonebook`)
+    }
+    else {
+      setPersons(persons.concat(newNumber))
+      setNewName("")
+    }
   }
 
   const handleNewName = (e) => setNewName(e.target.value)
 
   return (
     <div>
-      <h2>Phonebook</h2>      
+      <h2>Phonebook</h2>
       <form onSubmit={addNumber}>
         <div>
           name: <input autoFocus value={newName} onChange={handleNewName} />
@@ -37,7 +43,7 @@ const App = () => {
       </form>
 
       <h2>Numbers</h2>
-      {persons.map(person => <Number key={person.name} person={person} /> )}
+      {persons.map(person => <Number key={person.name} person={person} />)}
     </div>
   )
 }
