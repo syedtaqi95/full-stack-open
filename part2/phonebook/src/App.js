@@ -32,13 +32,13 @@ const App = () => {
   const handleNewNumber = (e) => setNewNumber(e.target.value)
   const handleFilterName = (e) => setFilterName(e.target.value)
 
-  const personsToShow = (filterName === "") ? [...persons]
+  const personsToShow = (filterName === "") 
+    ? [...persons]
     : persons.filter((person) => {
-      const nameLowerCase = person.name.toLowerCase()
-      const filterNameLower = filterName.toLowerCase()
-      return nameLowerCase.includes(filterNameLower)
-    }
-    )
+        const nameLowerCase = person.name.toLowerCase()
+        const filterNameLower = filterName.toLowerCase()
+        return nameLowerCase.includes(filterNameLower)
+      })
 
   return (
     <div>
