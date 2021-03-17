@@ -15,7 +15,7 @@ const CountryInfo = ({country}) => {
       <div>
         <h2>{country.name}</h2>
         <div>capital {country.capital}</div>
-        <div>population {country.population}</div>
+        <div>population {country.population.toLocaleString()}</div>
         <h3>languages</h3>
         <ul>
         {country.languages.map((lang) =>          
@@ -69,12 +69,12 @@ const App = () => {
   const [filterName, setFilterName] = useState('')
   const [displayedCountry, setDisplayedCountry] = useState({})
 
-  const effectHook = () => {
+  const getCountriesData = () => {
     axios
       .get('https://restcountries.eu/rest/v2/all')
       .then(res => setCountryList(res.data))
   }
-  useEffect(effectHook, [])
+  useEffect(getCountriesData, [])
 
   const handleFilterName = (e) => setFilterName(e.target.value)
 
