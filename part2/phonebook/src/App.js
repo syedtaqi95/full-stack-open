@@ -37,6 +37,21 @@ const App = () => {
     }
   }
 
+  const deleteNumber = (e) => {
+    e.preventDefault()
+    const name = e.target.firstChild.data
+    const id = persons.find((p) => p.name === name).id
+    
+    if(window.confirm(`Delete ${name}?`)) {
+      PersonsService.deletePerson(id).then(() => {
+        setPersons(persons.filter(p => p.id !== id ))
+      })
+      .catch(error => {
+        console.log('could not delete number as it doesn\'t exist')
+      })      
+    }
+  }
+
   const handleNewName = (e) => setNewName(e.target.value)
   const handleNewNumber = (e) => setNewNumber(e.target.value)
   const handleFilterName = (e) => setFilterName(e.target.value)
@@ -57,7 +72,7 @@ const App = () => {
       <Form addNumber={addNumber} newName={newName} handleNewName={handleNewName}
         newNumber={newNumber} handleNewNumber={handleNewNumber} />
       <h2>Numbers</h2>
-      <Numbers personsToShow={personsToShow} />
+      <Numbers personsToShow={personsToShow} deleteNumber={deleteNumber} />
     </div>
   )
 }

@@ -1,16 +1,16 @@
 import React from 'react'
 
-const Number = ({ person }) => {
+const Number = ({ person, deleteNumber }) => {
     return (
-        <div>
-            {person.name} {person.number}
-        </div>
+        <form onSubmit={deleteNumber}>
+            {person.name} {person.number} <button>delete</button>
+        </form>
     )
 }
 
-const Numbers = ({ personsToShow }) => {
+const Numbers = ({ personsToShow, deleteNumber }) => {
     return (
-        personsToShow.map(person => <Number key={person.name} person={person} />)
+        personsToShow.map(person => <Number key={person.name} person={person} deleteNumber={deleteNumber} />)
     )
 }
 
