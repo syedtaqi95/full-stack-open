@@ -7,14 +7,10 @@ const SearchBar = ({ filterName, handleFilterName }) => (
     </div>
 )
 
-const SearchResult = ({ filteredCountries }) => {
-  if (filteredCountries.length > 10) {
-    return (
-      <div>Too many countries, specify another filter</div>
-    )
-  }
-  else if (filteredCountries.length === 1) {
-    const country = filteredCountries[0]
+const CountryInfo = ({country}) => {
+  if (Object.entries(country).length === 0)
+    return (<></>)
+  else {
     return (
       <div>
         <h2>{country.name}</h2>
@@ -26,9 +22,28 @@ const SearchResult = ({ filteredCountries }) => {
           <li key={lang.name}>{lang.name}</li>
         )}
         </ul>
-        <img src={country.flag} width={150} />
+        <img src={country.flag} alt={country.name} width={150} />
       </div>
     )
+  }  
+}
+
+const SearchResult = ({ filteredCountries, setDisplayedCountry }) => {
+
+  const handleShowCountry = (e) => {
+    e.preventDefault()
+    const country = filteredCountries.filter((c) => c.name === e.target.firstChild.data)[0]
+    setDisplayedCountry(country)
+  }
+
+  if (filteredCountries.length > 10) {
+    return (
+      <div>Too many countries, specify another filter</div>
+    )
+  }
+  else if (filteredCountries.length === 1) {
+    setDisplayedCountry(filteredCountries[0])
+    return <></>
   }
   else if (filteredCountries.length === 0) {
     return (
@@ -37,7 +52,14 @@ const SearchResult = ({ filteredCountries }) => {
   }
   else {
     return (
-      filteredCountries.map((country) => <div key={country.name}>{country.name}</div>)
+      filteredCountries.map((country) => {
+        return (
+          <form key={country.name} onSubmit={handleShowCountry}>
+            {country.name} 
+            <button>show</button>
+          </form>
+        )
+      })
     )
   }
 }
@@ -45,6 +67,7 @@ const SearchResult = ({ filteredCountries }) => {
 const App = () => {
   const [countryList, setCountryList] = useState([])
   const [filterName, setFilterName] = useState('')
+  const [displayedCountry, setDisplayedCountry] = useState({})
 
   const effectHook = () => {
     axios
@@ -66,7 +89,9 @@ const App = () => {
   return (
     <div>
       <SearchBar filterName={filterName} handleFilterName={handleFilterName} />
-      <SearchResult filteredCountries={filteredCountries} />
+      <SearchResult filteredCountries={filteredCountries} 
+        setDisplayedCountry={setDisplayedCountry}/>
+      <CountryInfo country={displayedCountry} />
     </div>
   );
 }
