@@ -24,7 +24,21 @@ const App = () => {
     const newEntry = { name: newName, number: newNumber }
 
     if (persons.some(p => p.name === newName)) {
-      alert(`${newName} is already added to phonebook`)
+      const prompt = `${newName} is already added to phonebook, replace the old number with a new one?`
+      if(window.confirm(prompt)) {
+        const id = persons.find(p => p.name === newName).id
+        PersonsService.update(id, newEntry).then(returnedPerson => {
+          setPersons(persons.map(p => p.id !== id ? p : returnedPerson))
+        })
+        .catch(error => {
+          alert(
+            `the person '${newEntry.name}' was already deleted from server`
+          )
+          setPersons(persons.filter(p => p.id !== id))
+        })        
+        setNewName("")
+        setNewNumber("")
+      }
     }
     else {
       PersonsService
