@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Filter from './components/Filter'
 import Form from './components/Form'
 import Numbers from './components/Numbers'
+import Notification from './components/Notification'
 import PersonsService from './services/persons'
 
 const App = () => {
@@ -81,6 +82,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message='' />
       <Filter filterName={filterName} handleFilterName={handleFilterName} />
       <h2>add a new</h2>
       <Form addNumber={addNumber} newName={newName} handleNewName={handleNewName}
