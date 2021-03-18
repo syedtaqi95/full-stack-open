@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import Filter from './Filter'
-import Form from './Form'
-import Numbers from './Numbers'
+import Filter from './components/Filter'
+import Form from './components/Form'
+import Numbers from './components/Numbers'
 import PersonsService from './services/persons'
 
 const App = () => {
