@@ -11,6 +11,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filterName, setFilterName] = useState('')
   const [successMessage, setSuccessMessage] = useState(null)
+  const [notificationType, setNotificationType] = useState('success')
 
   const getInitialNumbers = () => {
     PersonsService
@@ -31,15 +32,18 @@ const App = () => {
         const id = persons.find(p => p.name === newName).id
         PersonsService.update(id, newEntry).then(returnedPerson => {
           setPersons(persons.map(p => p.id !== id ? p : returnedPerson))
+          setNotificationType('success')
           setSuccessMessage(`Added ${returnedPerson.name}`)
           setTimeout(() => {
             setSuccessMessage(null)
           }, 5000)
         })
           .catch(error => {
-            alert(
-              `the person '${newEntry.name}' was already deleted from server`
-            )
+            setNotificationType('error')
+            setSuccessMessage(`Information of ${newName} has already been removed from server`)
+            setTimeout(() => {
+              setSuccessMessage(null)
+            }, 5000)
             setPersons(persons.filter(p => p.id !== id))
           })
         setNewName("")
@@ -53,6 +57,7 @@ const App = () => {
           setPersons(persons.concat(returnedPerson))
           setNewName("")
           setNewNumber("")
+          setNotificationType('success')
           setSuccessMessage(`Added ${returnedPerson.name}`)
           setTimeout(() => {
             setSuccessMessage(null)
@@ -91,7 +96,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={successMessage} />
+      <Notification message={successMessage} notificationType={notificationType} />
       <Filter filterName={filterName} handleFilterName={handleFilterName} />
       <h2>add a new</h2>
       <Form addNumber={addNumber} newName={newName} handleNewName={handleNewName}
