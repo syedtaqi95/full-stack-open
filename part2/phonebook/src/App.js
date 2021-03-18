@@ -10,6 +10,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filterName, setFilterName] = useState('')
+  const [successMessage, setSuccessMessage] = useState(null)
 
   const getInitialNumbers = () => {
     PersonsService
@@ -26,17 +27,21 @@ const App = () => {
 
     if (persons.some(p => p.name === newName)) {
       const prompt = `${newName} is already added to phonebook, replace the old number with a new one?`
-      if(window.confirm(prompt)) {
+      if (window.confirm(prompt)) {
         const id = persons.find(p => p.name === newName).id
         PersonsService.update(id, newEntry).then(returnedPerson => {
           setPersons(persons.map(p => p.id !== id ? p : returnedPerson))
+          setSuccessMessage(`Added ${returnedPerson.name}`)
+          setTimeout(() => {
+            setSuccessMessage(null)
+          }, 5000)
         })
-        .catch(error => {
-          alert(
-            `the person '${newEntry.name}' was already deleted from server`
-          )
-          setPersons(persons.filter(p => p.id !== id))
-        })        
+          .catch(error => {
+            alert(
+              `the person '${newEntry.name}' was already deleted from server`
+            )
+            setPersons(persons.filter(p => p.id !== id))
+          })
         setNewName("")
         setNewNumber("")
       }
@@ -44,10 +49,14 @@ const App = () => {
     else {
       PersonsService
         .create(newEntry)
-        .then(returnedNumber => {
-          setPersons(persons.concat(returnedNumber))
+        .then(returnedPerson => {
+          setPersons(persons.concat(returnedPerson))
           setNewName("")
           setNewNumber("")
+          setSuccessMessage(`Added ${returnedPerson.name}`)
+          setTimeout(() => {
+            setSuccessMessage(null)
+          }, 5000)
         })
     }
   }
@@ -56,14 +65,14 @@ const App = () => {
     e.preventDefault()
     const name = e.target.firstChild.data
     const id = persons.find((p) => p.name === name).id
-    
-    if(window.confirm(`Delete ${name}?`)) {
+
+    if (window.confirm(`Delete ${name}?`)) {
       PersonsService.deletePerson(id).then(() => {
-        setPersons(persons.filter(p => p.id !== id ))
+        setPersons(persons.filter(p => p.id !== id))
       })
-      .catch(error => {
-        console.log('could not delete number as it doesn\'t exist')
-      })      
+        .catch(error => {
+          console.log('could not delete number as it doesn\'t exist')
+        })
     }
   }
 
@@ -71,18 +80,18 @@ const App = () => {
   const handleNewNumber = (e) => setNewNumber(e.target.value)
   const handleFilterName = (e) => setFilterName(e.target.value)
 
-  const personsToShow = (filterName === "") 
+  const personsToShow = (filterName === "")
     ? [...persons]
     : persons.filter((person) => {
-        const nameLowerCase = person.name.toLowerCase()
-        const filterNameLower = filterName.toLowerCase()
-        return nameLowerCase.includes(filterNameLower)
-      })
+      const nameLowerCase = person.name.toLowerCase()
+      const filterNameLower = filterName.toLowerCase()
+      return nameLowerCase.includes(filterNameLower)
+    })
 
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message='' />
+      <Notification message={successMessage} />
       <Filter filterName={filterName} handleFilterName={handleFilterName} />
       <h2>add a new</h2>
       <Form addNumber={addNumber} newName={newName} handleNewName={handleNewName}
