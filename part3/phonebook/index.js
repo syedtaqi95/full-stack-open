@@ -31,7 +31,7 @@ app.get("/", (request, response) => {
 })
 
 app.get("/api/persons", (request, response) => {
-
+  response.json(phonebook)
 })
 
 const PORT = 3001
