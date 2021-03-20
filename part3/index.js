@@ -1,4 +1,5 @@
 const express = require('express')
+const nodemon = require('nodemon')
 const app = express()
 
 app.use(express.json())
@@ -50,9 +51,31 @@ app.delete('/api/notes/:id', (request, response) => {
     response.status(204).end()
 })
 
+const generateID = () => {
+    const maxID = notes.length > 0
+        ? Math.max(...notes.map(n => n.id))
+        : 0
+    return maxID + 1
+}
+
 app.post('/api/notes', (request, response) => {
-    const note = request.body
-    console.log(note)
+    const body = request.body
+
+    if(!body.content) {
+        return response.status(400).json({
+            error: 'content missing'
+        })
+    }
+
+    const note = {
+        content: body.content,
+        important: body.important || false,
+        date: new Date(),
+        id : generateID(),
+    }
+    
+    notes = notes.concat(note)
+
     response.json(note)
 })
 
