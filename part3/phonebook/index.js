@@ -26,13 +26,11 @@ const phonebook = [
   }
 ]
 
+
 app.get("/", (request, response) => {
   response.send("<h1>Phonebook</h1>")
 })
 
-app.get("/api/persons", (request, response) => {
-  response.json(phonebook)
-})
 
 app.get("/info", (request, response) => {
   const current_time = new Date()
@@ -42,6 +40,24 @@ app.get("/info", (request, response) => {
     <p> ${current_time} </p>`
   )
 })
+
+
+app.get("/api/persons", (request, response) => {
+  response.json(phonebook)
+})
+
+
+app.get("/api/persons/:id", (request, response) => {
+  const id = Number(request.params.id)
+  const entry = phonebook.find(p => p.id === id)
+  if(entry) {
+    response.json(entry)
+  }
+  else {
+    response.status(404).end()
+  }
+})
+
 
 const PORT = 3001
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
