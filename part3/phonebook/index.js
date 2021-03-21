@@ -3,7 +3,7 @@ const app = express()
 
 app.use(express.json())
 
-const phonebook = [
+let phonebook = [
   {
     "name": "Arto Hellas",
     "number": "040-123456",
@@ -52,6 +52,20 @@ app.get("/api/persons/:id", (request, response) => {
   const entry = phonebook.find(p => p.id === id)
   if(entry) {
     response.json(entry)
+  }
+  else {
+    response.status(404).end()
+  }
+})
+
+
+app.delete("/api/persons/:id", (request, response) => {
+  const id = Number(request.params.id)
+  const entry = phonebook.find(p => p.id === id)
+
+  if(entry) {
+    phonebook = phonebook.filter(p => p.id !== id)
+    response.status(204).end()
   }
   else {
     response.status(404).end()
