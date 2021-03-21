@@ -3,6 +3,16 @@ const app = express()
 
 app.use(express.json())
 
+const requestLogger = (req, res, next) => {
+  console.log('Method:', req.method)
+  console.log('Path:', req.path)
+  console.log('Body:', req.body)
+  console.log('---')
+  next()
+} 
+
+app.use(requestLogger)
+
 let phonebook = [
   {
     name: "Arto Hellas",
@@ -102,6 +112,13 @@ app.post("/api/persons", (request, response) => {
   phonebook = phonebook.concat(entry)
   response.json(entry)
 })
+
+
+const unknownEndpoint = (req, res, next) => {
+  res.status(404).send({ error: 'unknown endpoint'})
+}
+
+app.use(unknownEndpoint)
 
 const PORT = 3001
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`))

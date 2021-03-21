@@ -29,3 +29,6 @@ Content-Type: application/json
     "name": "Dave Grohl",
     "whoDis": "07539913355"
 }
+
+###
+GET http://localhost:3001/api/cows HTTP/1.1
