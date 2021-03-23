@@ -10,7 +10,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filterName, setFilterName] = useState('')
-  const [successMessage, setSuccessMessage] = useState(null)
+  const [notification, setnotification] = useState(null)
   const [notificationType, setNotificationType] = useState('success')
 
   const getInitialNumbers = () => {
@@ -33,16 +33,17 @@ const App = () => {
         PersonsService.update(id, newEntry).then(returnedPerson => {
           setPersons(persons.map(p => p.id !== id ? p : returnedPerson))
           setNotificationType('success')
-          setSuccessMessage(`Added ${returnedPerson.name}`)
+          setnotification(`Added ${returnedPerson.name}`)
           setTimeout(() => {
-            setSuccessMessage(null)
+            setnotification(null)
           }, 5000)
         })
           .catch(error => {
+            console.log(error.response.data)
             setNotificationType('error')
-            setSuccessMessage(`Information of ${newName} has already been removed from server`)
+            setnotification(`Information of ${newName} has already been removed from server`)
             setTimeout(() => {
-              setSuccessMessage(null)
+              setnotification(null)
             }, 5000)
             setPersons(persons.filter(p => p.id !== id))
           })
@@ -58,10 +59,18 @@ const App = () => {
           setNewName("")
           setNewNumber("")
           setNotificationType('success')
-          setSuccessMessage(`Added ${returnedPerson.name}`)
+          setnotification(`Added ${returnedPerson.name}`)
           setTimeout(() => {
-            setSuccessMessage(null)
+            setnotification(null)
           }, 5000)
+        })
+        .catch(error => {
+          console.log(error.response.data)
+          setNotificationType('error')
+          setnotification(`Person validation failed.`)
+            setTimeout(() => {
+              setnotification(null)
+            }, 5000)
         })
     }
   }
@@ -96,7 +105,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={successMessage} notificationType={notificationType} />
+      <Notification message={notification} notificationType={notificationType} />
       <Filter filterName={filterName} handleFilterName={handleFilterName} />
       <h2>add a new</h2>
       <Form addNumber={addNumber} newName={newName} handleNewName={handleNewName}
