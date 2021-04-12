@@ -14,7 +14,7 @@ const NoteForm = ({ createNote }) => {
       important: Math.random() < 0.5,
     })
     setNewNote('')
-  }  
+  }
 
   return (
     <div>
