@@ -93,5 +93,22 @@ describe('Note app', function () {
       })
     })
 
+    describe('and several notes exist', function () {
+      beforeEach(function () {
+        cy.createNote({ content: 'first note', important: false })
+        cy.createNote({ content: 'second note', important: false })
+        cy.createNote({ content: 'third note', important: false })
+      })
+
+      it.only('one of those can be made important', function () {
+        cy.contains('second note')
+          .contains('make important')
+          .click()
+
+        cy.contains('second note')
+          .contains('make not important')
+      })
+    })
+
   })
 })
