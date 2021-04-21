@@ -32,6 +32,15 @@ const reducer = (state = initialState, action) => {
         votes: anecdoteToChange.votes + 1
       }
       return state.map(anecdote => anecdote.id !== id ? anecdote : changedAnecdote)
+
+    case 'ADD_ANECDOTE':
+      const newAnecdote = {
+        content: action.data.content,
+        id: getId(),
+        votes: 0
+      }
+      return [...state, newAnecdote] 
+
     default:
       return state
   }
