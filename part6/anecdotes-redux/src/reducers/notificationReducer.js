@@ -1,18 +1,32 @@
-const initialState = 'this is a notification'
+const initialState = {
+  message: '',
+  display: 'none'
+}
 
 const reducer = (state = initialState, action) => {
   switch(action.type) {
     case 'SET_NOTIFICATION':
-      return action.notification
+      return {
+        message: action.message,
+        display: ''
+      }
+    case 'CLEAR_NOTIFICATION':
+      return initialState
     default:
       return state
   }
 }
 
-export const setNotification = (notification) => {
+export const setNotification = (message) => {
   return {
     type: 'SET_NOTIFICATION',
-    notification
+    message
+  }
+}
+
+export const clearNotification = () => {
+  return {
+    type: 'CLEAR_NOTIFICATION'
   }
 }
 

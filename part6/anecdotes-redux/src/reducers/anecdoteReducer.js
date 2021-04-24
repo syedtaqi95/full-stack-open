@@ -1,3 +1,5 @@
+import { setNotification, clearNotification } from './notificationReducer'
+
 const anecdotesAtStart = [
   'If it hurts, do it more often',
   'Adding manpower to a late software project makes it later!',
@@ -36,7 +38,7 @@ const reducer = (state = initialState, action) => {
         id: getId(),
         votes: 0
       }
-      return [...state, newAnecdote] 
+      return [...state, newAnecdote]
 
     default:
       return state
