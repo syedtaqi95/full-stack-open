@@ -11,7 +11,7 @@ const AnecdoteList = () => {
   const voteHandler = (anecdote) => {
     dispatch(vote(anecdote))
     // Display a notification for 5 seconds
-    dispatch(setNotification(`You voted for '${anecdote.content}'`, 3))
+    dispatch(setNotification(`You voted for '${anecdote.content}'`, 5))
   }
 
   return (
