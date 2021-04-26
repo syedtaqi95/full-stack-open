@@ -1,7 +1,7 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
-import { createAnecdote } from '../reducers/anecdoteReducer'
-import {setNotification, clearNotification} from '../reducers/notificationReducer'
+import { createAnecdote, getId } from '../reducers/anecdoteReducer'
+import { setNotification, clearNotification } from '../reducers/notificationReducer'
 
 const AnecdoteForm = () => {
 
@@ -10,13 +10,19 @@ const AnecdoteForm = () => {
   const addAnecdoteHandler = (event) => {
     // Clear the form
     event.preventDefault()
-    const anecdote = event.target.anecdote.value
+    const content = event.target.anecdote.value
     event.target.anecdote.value = ''
-    
-    dispatch(createAnecdote(anecdote))
-    
+
+    const newAnecdote = {
+      content,
+      id: getId(),
+      votes: 0
+    }
+
+    dispatch(createAnecdote(newAnecdote))
+
     // Display a notification for 5 seconds
-    dispatch(setNotification(`New anecdote created: '${anecdote}'`))
+    dispatch(setNotification(`New anecdote created: '${content}'`))
     setTimeout(() => dispatch(clearNotification()), 5000)
   }
 
