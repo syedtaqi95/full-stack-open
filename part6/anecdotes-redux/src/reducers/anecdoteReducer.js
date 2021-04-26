@@ -49,10 +49,10 @@ export const vote = (id) => {
   }
 }
 
-export const createAnecdote = (anecdote) => {
+export const createAnecdote = (data) => {
   return {
     type: 'ADD_ANECDOTE',
-    data: anecdote
+    data
   }
 }
 
