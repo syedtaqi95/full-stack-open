@@ -30,7 +30,6 @@ export const setNotification = (message, time = 5) => {
       () => dispatch(clearNotification()),
       time*1000
     )
-    console.log(timeoutId)
   }
 }
 
