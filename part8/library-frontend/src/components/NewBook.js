@@ -1,4 +1,6 @@
 import React, { useState } from 'react'
+import { useMutation } from '@apollo/client'
+import { CREATE_BOOK, ALL_AUTHORS, ALL_BOOKS } from '../queries'
 
 const NewBook = (props) => {
   const [title, setTitle] = useState('')
@@ -7,14 +9,24 @@ const NewBook = (props) => {
   const [genre, setGenre] = useState('')
   const [genres, setGenres] = useState([])
 
+  const [createBook] = useMutation(CREATE_BOOK, {
+    refetchQueries: [{ query: ALL_AUTHORS }, { query: ALL_BOOKS }],
+    onError: ({ graphQLErrors, networkError }) => {
+      if (graphQLErrors)
+        graphQLErrors.forEach(({ message }) => console.log(`[GraphQL error]: ${message}`))
+
+      if (networkError)
+        console.log(`[Network error]: ${networkError}`)
+    }
+  })
+
   if (!props.show) {
     return null
   }
 
   const submit = async (event) => {
     event.preventDefault()
-    
-    console.log('add book...')
+    createBook({ variables: { title, author, published: parseInt(published), genres } })
 
     setTitle('')
     setPublished('')
@@ -30,6 +42,9 @@ const NewBook = (props) => {
 
   return (
     <div>
+      <div>
+
+      </div>
       <form onSubmit={submit}>
         <div>
           title
