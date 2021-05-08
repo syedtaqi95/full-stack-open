@@ -1,16 +1,19 @@
 import { useMutation } from '@apollo/client'
 import React, { useState } from 'react'
 import { SET_BIRTHYEAR, ALL_AUTHORS } from '../queries'
+import Select from 'react-select'
 
-const BirthYearForm = () => {
+const BirthYearForm = ({ authors }) => {
   const [name, setName] = useState('')
   const [born, setBorn] = useState('')
+
+  const options = authors.map(a => ({ value: a.name, label: a.name }))
 
   const [setBirthYear] = useMutation(SET_BIRTHYEAR, {
     refetchQueries: [{ query: ALL_AUTHORS }],
     onError: ({ graphQLErrors, networkError }) => {
       if (graphQLErrors)
-        graphQLErrors.forEach(({ message }) => console.log(`[GraphQL error]: ${message}`))
+        graphQLErrors.map(({ message }) => console.log(`[GraphQL error]: ${message}`))
 
       if (networkError)
         console.log(`[Network error]: ${networkError}`)
@@ -30,9 +33,9 @@ const BirthYearForm = () => {
       <form onSubmit={submit}>
         <div>
           name
-          <input
-            value={name}
-            onChange={({ target }) => setName(target.value)}
+          <Select
+            options={options}
+            onChange={(selectedOption) => setName(selectedOption.value)}
           />
         </div>
         <div>
