@@ -30,8 +30,8 @@ const Authors = (props) => {
           )}
         </tbody>
       </table>
-
-      <BirthYearForm authors={authors} />
+      
+      {props.showBirthYearForm ? <BirthYearForm authors={authors} /> : null}      
 
     </div>
   )
