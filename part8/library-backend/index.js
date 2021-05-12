@@ -90,10 +90,13 @@ const resolvers = {
   },
 
   Author: {
-    bookCount: (root) => books.reduce(
-      (count, book) => book.author === root.name ? ++count : count,
-      0
-    )
+    bookCount: async (root) => {
+      const books = await Book.find({}).populate('author')
+      return books.reduce(
+        (count, book) => book.author.name === root.name ? ++count : count,
+        0
+      )
+    }
   },
 
   Mutation: {
