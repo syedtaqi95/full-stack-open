@@ -25,6 +25,7 @@ const App = () => {
     setToken(null)
     localStorage.clear()
     client.resetStore() // resets the Apollo cache
+    setPage('authors')
   }
 
   return (

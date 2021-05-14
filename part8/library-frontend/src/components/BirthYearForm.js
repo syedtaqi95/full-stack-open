@@ -27,28 +27,15 @@ const BirthYearForm = ({ authors }) => {
     setBorn('')
   }
 
-  const customStyles = {
-    menu: (provided, state) => ({
-      ...provided,
-      width: state.selectProps.width,
-      padding: 20,
-    }),
-    control: (_, { selectProps: { width } }) => ({
-      width: width,
-    })
-  }
-
   return (
     <div>
       <h3>Set birthyear</h3>
       <form onSubmit={submit}>
-        <div>
+        <div style={{ width: "200px" }}>
           name
           <Select
             options={options}
             onChange={(selectedOption) => setName(selectedOption.value)}
-            width='500px'
-            styles={customStyles}
           />
         </div>
         <div>
