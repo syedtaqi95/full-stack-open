@@ -1,8 +1,13 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 const Books = (props) => {
   const [selectedGenre, setSelectedGenre] = useState('all genres')
   const books = props.books
+
+  // Reset filter when navigating away from the view
+  useEffect(() => {
+    setSelectedGenre('all genres')
+  }, [props.show])
 
   // Find genres
   const genreSet = new Set()

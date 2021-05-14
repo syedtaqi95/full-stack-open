@@ -3,8 +3,9 @@ import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
 import LoginForm from './components/LoginForm'
-import { useApolloClient, useQuery } from '@apollo/client'
-import { ALL_AUTHORS, ALL_BOOKS } from './queries'
+import { useApolloClient, useQuery, useLazyQuery } from '@apollo/client'
+import { ALL_AUTHORS, ALL_BOOKS, GET_USER } from './queries'
+import Recommendations from './components/Recommendations'
 
 const App = () => {
   // State and Query hooks
@@ -12,13 +13,18 @@ const App = () => {
   const [token, setToken] = useState(null)
   const authorsResult = useQuery(ALL_AUTHORS)
   const booksResult = useQuery(ALL_BOOKS)
+  const [getUser, userResult] = useLazyQuery(GET_USER, {
+    fetchPolicy: "network-only"
+  })
   const client = useApolloClient()
 
   useEffect(() => {
     const token = localStorage.getItem('library-user-token')
-    if (token)
+    if (token) {
       setToken(token)
-  }, [])
+      getUser()
+    }
+  }, []) // eslint-disable-line
 
   const handleLogout = (event) => {
     event.preventDefault()
@@ -36,6 +42,7 @@ const App = () => {
         {token
           ? <span>
             <button onClick={() => setPage('add')}>add book</button>
+            <button onClick={() => setPage('recommend')}>recommend</button>
             <button onClick={handleLogout}>logout</button>
           </span>
           : <button onClick={() => setPage('login')}>login</button>
@@ -57,10 +64,17 @@ const App = () => {
         show={page === 'add'}
       />
 
+      <Recommendations
+        show={page === 'recommend'}
+        books={booksResult.loading ? [] : booksResult.data.allBooks}
+        userResult={userResult}
+      />
+
       <LoginForm
         show={page === 'login'}
         setToken={setToken}
         setPage={setPage}
+        getUser={getUser}
       />
 
     </div>
