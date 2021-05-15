@@ -14,7 +14,7 @@ const App = () => {
   const authorsResult = useQuery(ALL_AUTHORS)
   const booksResult = useQuery(ALL_BOOKS)
   const [getUser, userResult] = useLazyQuery(GET_USER, {
-    fetchPolicy: "network-only"
+    fetchPolicy: "network-only" // to fetch data from the server if resetStore() is called
   })
   const client = useApolloClient()
 
@@ -66,7 +66,6 @@ const App = () => {
 
       <Recommendations
         show={page === 'recommend'}
-        books={booksResult.loading ? [] : booksResult.data.allBooks}
         userResult={userResult}
       />
 
