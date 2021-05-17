@@ -3,8 +3,8 @@ import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
 import LoginForm from './components/LoginForm'
-import { useApolloClient, useQuery, useLazyQuery } from '@apollo/client'
-import { ALL_AUTHORS, ALL_BOOKS, GET_USER } from './queries'
+import { useApolloClient, useQuery, useLazyQuery, useSubscription } from '@apollo/client'
+import { ALL_AUTHORS, ALL_BOOKS, BOOK_ADDED, GET_USER } from './queries'
 import Recommendations from './components/Recommendations'
 
 const App = () => {
@@ -17,6 +17,13 @@ const App = () => {
     fetchPolicy: "network-only" // to fetch data from the server if resetStore() is called
   })
   const client = useApolloClient()
+
+  useSubscription(BOOK_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      const { title, published, author } = subscriptionData.data.bookAdded
+      window.alert(`Added '${title}' by ${author.name} (${published})`)
+    }
+  })
 
   useEffect(() => {
     const token = localStorage.getItem('library-user-token')
