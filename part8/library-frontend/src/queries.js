@@ -6,6 +6,9 @@ const BOOK_DETAILS = gql`
     published
     author {
       name
+      id
+      born
+      bookCount
     }
     id
   }

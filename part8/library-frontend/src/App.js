@@ -18,10 +18,45 @@ const App = () => {
   })
   const client = useApolloClient()
 
+  // Helper function to add book to Apollo cache
+  // Only updates cache if book is not added by current user
+  const updateCacheWith = (addedBook) => {
+    const includedIn = (set, object) => set.map(b => b.id).includes(object.id)
+    const booksInStore = client.readQuery({ query: ALL_BOOKS })
+    const authorsInStore = client.readQuery({ query: ALL_AUTHORS })
+
+    if (!includedIn(booksInStore.allBooks, addedBook)) {
+      // add book to cache
+      client.writeQuery({
+        query: ALL_BOOKS,
+        data: { allBooks: booksInStore.allBooks.concat(addedBook) }
+      })
+
+      // add author to cache if new, else update author's bookCount
+      if (!includedIn(authorsInStore.allAuthors, addedBook.author)) {
+        client.writeQuery({
+          query: ALL_AUTHORS,
+          data: { allAuthors: authorsInStore.allAuthors.concat(addedBook.author) }
+        })
+      }
+      else {
+        client.writeQuery({
+          query: ALL_AUTHORS,
+          data: {
+            allAuthors: authorsInStore.allAuthors.map(a =>
+              a.id === addedBook.author.id ? a.bookCount++ : a
+            )
+          }
+        })
+      }
+    }
+  }
+
+  // GQL subscription to add new books from the server
   useSubscription(BOOK_ADDED, {
     onSubscriptionData: ({ subscriptionData }) => {
-      const { title, published, author } = subscriptionData.data.bookAdded
-      window.alert(`Added '${title}' by ${author.name} (${published})`)
+      const addedBook = subscriptionData.data.bookAdded
+      updateCacheWith(addedBook)
     }
   })
 
