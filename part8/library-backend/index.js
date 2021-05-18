@@ -19,6 +19,8 @@ mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true,
     console.log('error connecting to MongoDB:', e.message)
   })
 
+mongoose.set('debug', true)
+
 const typeDefs = gql`
   type Book {
     title: String!,
@@ -102,16 +104,6 @@ const resolvers = {
     }
   },
 
-  Author: {
-    bookCount: async (root) => {
-      const books = await Book.find({}).populate('author')
-      return books.reduce(
-        (count, book) => book.author.name === root.name ? ++count : count,
-        0
-      )
-    }
-  },
-
   Mutation: {
     addBook: async (root, args, context) => {
       // Check if user is logged in
@@ -119,17 +111,20 @@ const resolvers = {
         throw new AuthenticationError('not authenticated')
       }
 
-      // Add the author if they don't exist
+      // Add the author if they don't exist, else increment bookCount
       let author = await Author.findOne({ name: args.author })
       if (!author) {
-        author = new Author({ name: args.author })
-        try {
-          await author.save()
-        } catch (e) {
-          throw new UserInputError(e.message, {
-            invalidArgs: args
-          })
-        }
+        author = new Author({ name: args.author, bookCount: 1 })
+      }
+      else {
+        author.bookCount += 1
+      }
+      try {
+        await author.save()
+      } catch (e) {
+        throw new UserInputError(e.message, {
+          invalidArgs: args
+        })
       }
 
       const book = new Book({ ...args, author: author })

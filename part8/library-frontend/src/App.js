@@ -44,7 +44,7 @@ const App = () => {
           query: ALL_AUTHORS,
           data: {
             allAuthors: authorsInStore.allAuthors.map(a =>
-              a.id === addedBook.author.id ? a.bookCount++ : a
+              a.id === addedBook.author.id ? {...a, bookCount: a.bookCount + 1} : a
             )
           }
         })
