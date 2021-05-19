@@ -1,6 +1,6 @@
 const calculateBmi = (height: number, weight: number): string => {
   if (height === 0)
-    return 'height cannot be 0'
+    throw new Error('height cannot be 0');
 
   const bmi = weight / (height / 100) ** 2;
 
@@ -24,4 +24,4 @@ const calculateBmi = (height: number, weight: number): string => {
     return 'Could not calculate BMI'
 }
 
-console.log(calculateBmi(180, 77))
+console.log(calculateBmi(180, 70))
