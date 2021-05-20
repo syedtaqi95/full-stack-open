@@ -1,4 +1,4 @@
-const calculateBmi = (height: number, weight: number): string => {
+export const calculateBmi = (height: number, weight: number): string => {
   if (height === 0)
     throw new Error('height cannot be 0');
 
@@ -48,6 +48,5 @@ try {
   const {height, weight} = parseArgs(process.argv);
   console.log(calculateBmi(height, weight));
 } catch (e) {
-  console.log('Something bad happened:', e.message);
+  // console.log('Something bad happened:', e.message);
 }
-
