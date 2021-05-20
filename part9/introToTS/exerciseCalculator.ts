@@ -1,3 +1,27 @@
+interface arguments {
+  dailyHours: Array<number>,
+  target: number
+}
+
+const parseArguments = (args: Array<string>): arguments => {
+  if (args.length < 4)
+    throw new Error('incorrect argument length. Usage: npm run exercise [<dailyHours>] <target>')
+
+  const [, , ...mainArgs] = args;
+
+  const target = Number(mainArgs.pop());
+  if (isNaN(target))
+    throw new Error('target value is not a number')
+
+  const dailyHours = mainArgs.map(a => {
+    if (isNaN(Number(a)))
+      throw new Error('dailyHours do not contain all numbers')
+    return Number(a)
+  })
+
+  return { dailyHours, target }
+}
+
 interface returnObject {
   periodLength: number,
   trainingDays: number,
@@ -31,4 +55,9 @@ const calculateExercises = (dailyHours: Array<number>, target: number): returnOb
   }
 }
 
-console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2))
+try {
+  const { dailyHours, target } = parseArguments(process.argv);
+  console.log(calculateExercises(dailyHours, target));
+} catch (e) {
+  console.log('Something went wrong:', e.message);
+}

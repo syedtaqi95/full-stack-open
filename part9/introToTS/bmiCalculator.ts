@@ -24,4 +24,30 @@ const calculateBmi = (height: number, weight: number): string => {
     return 'Could not calculate BMI'
 }
 
-console.log(calculateBmi(180, 70))
+interface heightWeight {
+  height: number,
+  weight: number,
+}
+
+const parseArgs = (args: Array<string>): heightWeight => {
+  if (args.length !== 4)
+    throw new Error('incorrect argument length. Usage: npm run bmi <height> <weight>')
+  
+  if (!isNaN(Number(args[2])) && !isNaN(Number(args[3]))) {
+    return {
+      height: Number(args[2]),
+      weight: Number(args[3])
+    }
+  }
+  else {
+    throw new Error('Arguments were not numbers');
+  }
+}
+
+try {
+  const {height, weight} = parseArgs(process.argv);
+  console.log(calculateBmi(height, weight));
+} catch (e) {
+  console.log('Something bad happened:', e.message);
+}
+
