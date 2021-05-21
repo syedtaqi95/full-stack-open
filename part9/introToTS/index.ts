@@ -23,6 +23,7 @@ app.get('/bmi', (req, res) => {
     };
     return res.json(bmiResult);
   } catch (e) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment 
     return res.status(400).json({ error: e.message });
   }
 });
