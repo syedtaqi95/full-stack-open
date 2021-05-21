@@ -32,7 +32,7 @@ interface returnObject {
   average: number
 }
 
-const calculateExercises = (dailyHours: Array<number>, target: number): returnObject => {
+export const calculateExercises = (dailyHours: Array<number>, target: number): returnObject => {
   const periodLength = dailyHours.length;
   const trainingDays = dailyHours.filter(hours => hours !== 0).length;
   const average = dailyHours.reduce((a, b) => a + b, 0) / periodLength;
