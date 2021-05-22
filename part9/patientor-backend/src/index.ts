@@ -1,12 +1,14 @@
 import express from 'express';
 import cors from 'cors';
 import diagnosisRouter from './routes/diagnosesRouter';
+import patientsRouter from './routes/patientsRouter';
 
 // Express app config
 const app = express();
 app.use(cors());
 app.use(express.json());
 app.use('/api/diagnoses', diagnosisRouter);
+app.use('/api/patients', patientsRouter);
 
 // Ping request
 app.get('/api/ping', (req, res) => {
