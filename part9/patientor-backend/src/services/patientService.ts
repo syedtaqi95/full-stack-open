@@ -1,5 +1,6 @@
 import patients from '../../data/patients';
-import { PatientPublicFields } from '../types';
+import { PatientPublicFields, NewPatientEntry, Patient } from '../types';
+import { v1 as uuid } from 'uuid';
 
 const getEntries = (): PatientPublicFields[] => {
   return patients.map(({ id, name, dateOfBirth, gender, occupation }) => ({
@@ -7,6 +8,18 @@ const getEntries = (): PatientPublicFields[] => {
   }));
 };
 
+const addPatient = (object: NewPatientEntry): Patient => {
+  const newPatientEntry = {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+    id: uuid(),
+    ...object
+  };
+
+  patients.push(newPatientEntry);
+  return newPatientEntry;
+};
+
 export default {
-  getEntries
+  getEntries,
+  addPatient
 };

@@ -1,0 +1,13 @@
+GET http://localhost:3001/api/patients
+
+###
+POST http://localhost:3001/api/patients
+Content-Type: application/json
+
+{
+  "name": "Syed Haider",
+  "dateOfBirth": "1995-03-11",
+  "ssn": "ABCDEF123456",
+  "gender": "male",
+  "occupation": "engineer"
+}
