@@ -1,8 +1,8 @@
 import patients from '../../data/patients';
-import { PatientPublicFields, NewPatientEntry, Patient } from '../types';
+import { PublicPatient, NewPatientEntry, Patient } from '../types';
 import { v1 as uuid } from 'uuid';
 
-const getEntries = (): PatientPublicFields[] => {
+const getEntries = (): PublicPatient[] => {
   return patients.map(({ id, name, dateOfBirth, gender, occupation }) => ({
     id, name, dateOfBirth, gender, occupation
   }));
@@ -19,7 +19,17 @@ const addPatient = (object: NewPatientEntry): Patient => {
   return newPatientEntry;
 };
 
+const getPatient = (id: string): Patient | undefined => {
+  const patient = patients.find(p => p.id === id);
+  if (patient) {
+    return patient;
+  } else {
+    throw new Error(`patient not found, id: ${id}`);
+  }
+};
+
 export default {
   getEntries,
-  addPatient
+  addPatient,
+  getPatient
 };

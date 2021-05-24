@@ -1,10 +1,4 @@
-import { NewPatientEntry } from './types';
-
-enum Gender {
-  Male = 'male',
-  Female = 'female',
-  Other = 'other',
-}
+import { NewPatientEntry, Gender } from './types';
 
 const isString = (text: unknown): text is string => {
   return typeof text === 'string' || text instanceof String;
@@ -37,7 +31,7 @@ const parseSsn = (ssn: unknown): string => {
   return ssn;
 };
 
-const parseGender = (gender: unknown): string => {
+const parseGender = (gender: unknown): Gender => {
   if (!gender || !isString(gender) || !isGender(gender))
     throw new Error('Incorrect or missing gender');
   return gender;
@@ -58,6 +52,7 @@ export const toNewPatientEntry = ({ name, dateOfBirth, ssn, gender, occupation }
     ssn: parseSsn(ssn),
     gender: parseGender(gender),
     occupation: parseOccupation(occupation),
+    entries: [],
   };
 
   return newEntry;
