@@ -17,7 +17,17 @@ const addPatient = (object) => {
     patients_1.default.push(newPatientEntry);
     return newPatientEntry;
 };
+const getPatient = (id) => {
+    const patient = patients_1.default.find(p => p.id === id);
+    if (patient) {
+        return patient;
+    }
+    else {
+        throw new Error(`patient not found, id: ${id}`);
+    }
+};
 exports.default = {
     getEntries,
-    addPatient
+    addPatient,
+    getPatient
 };

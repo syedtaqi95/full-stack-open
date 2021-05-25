@@ -1,11 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.toNewPatientEntry = void 0;
+const types_1 = require("./types");
 const isString = (text) => {
     return typeof text === 'string' || text instanceof String;
 };
 const isDate = (date) => {
     return Boolean(Date.parse(date));
+};
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const isGender = (gender) => {
+    return Object.values(types_1.Gender).includes(gender);
 };
 const parseName = (name) => {
     if (!name || !isString(name))
@@ -23,12 +28,14 @@ const parseSsn = (ssn) => {
     return ssn;
 };
 const parseGender = (gender) => {
-    if (!gender || !isString(gender))
+    if (!gender || !isString(gender) || !isGender(gender))
         throw new Error('Incorrect or missing gender');
+    return gender;
 };
 const parseOccupation = (occupation) => {
     if (!occupation || !isString(occupation))
         throw new Error('Incorrect or missing occupation');
+    return occupation;
 };
 const toNewPatientEntry = ({ name, dateOfBirth, ssn, gender, occupation }) => {
     const newEntry = {
@@ -37,6 +44,7 @@ const toNewPatientEntry = ({ name, dateOfBirth, ssn, gender, occupation }) => {
         ssn: parseSsn(ssn),
         gender: parseGender(gender),
         occupation: parseOccupation(occupation),
+        entries: [],
     };
     return newEntry;
 };
