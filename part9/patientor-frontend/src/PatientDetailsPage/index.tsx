@@ -6,9 +6,10 @@ import axios from "axios";
 import { updatePatientData, useStateValue } from "../state";
 import { Patient } from "../types";
 import { apiBaseUrl } from "../constants";
+import EntryDetails from '../components/EntryDetails';
 
 const PatientDetailsPage = () => {
-  const [{ patients, diagnoses }, dispatch] = useStateValue();
+  const [{ patients }, dispatch] = useStateValue();
   const { id } = useParams<{ id: string }>();
   const [patient, setPatient] = useState<Patient | undefined>();
   const patientFromState = patients[id];
@@ -45,21 +46,11 @@ const PatientDetailsPage = () => {
           {patient?.name}
           <Icon name={icon} />
         </Header>
-        <div>ssn: {patient?.ssn}</div>
-        <div>occupation: {patient?.occupation}</div>
+        <div>SSN: {patient?.ssn}</div>
+        <div>Occupation: {patient?.occupation}</div>
 
-        <Header as="h2">entries</Header>
-        {patient?.entries?.map(entry => (
-          <div key={entry.id}>
-            {entry.date} <i>{entry.description}</i>
-            <ul>
-              {entry.diagnosisCodes?.map(code => (
-                <li key={code}>{code} {diagnoses[code].name}</li>
-              ))}
-            </ul>
-          </div>
-        ))}
-
+        <Header as="h2">Entries</Header>
+        {patient?.entries?.map(entry => (<EntryDetails key={entry.id} entry={entry} />))}
       </Container>
     </div>
   );
