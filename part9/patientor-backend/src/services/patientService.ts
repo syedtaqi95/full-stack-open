@@ -1,5 +1,5 @@
 import patients from '../../data/patients';
-import { PublicPatient, NewPatientEntry, Patient } from '../types';
+import { PublicPatient, NewPatientEntry, Patient, EntryWithoutId, Entry } from '../types';
 import { v1 as uuid } from 'uuid';
 
 const getEntries = (): PublicPatient[] => {
@@ -10,7 +10,6 @@ const getEntries = (): PublicPatient[] => {
 
 const addPatient = (object: NewPatientEntry): Patient => {
   const newPatientEntry = {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
     id: uuid(),
     ...object
   };
@@ -19,7 +18,7 @@ const addPatient = (object: NewPatientEntry): Patient => {
   return newPatientEntry;
 };
 
-const getPatient = (id: string): Patient | undefined => {
+const getPatient = (id: string): Patient => {
   const patient = patients.find(p => p.id === id);
   if (patient) {
     return patient;
@@ -28,8 +27,23 @@ const getPatient = (id: string): Patient | undefined => {
   }
 };
 
+const addEntryToPatient = (entry: EntryWithoutId, patientId: string): Entry => {
+  const newEntry = {
+    ...entry,
+    id: uuid(),
+  };
+
+  const patient = patients.find(p => p.id === patientId);
+  if (patient) {
+    patient.entries ? patient.entries.push(newEntry) : patient.entries = [newEntry];
+    return newEntry;
+  } else
+    throw new Error(`could not add entry to patient id ${patientId}`);
+};
+
 export default {
   getEntries,
   addPatient,
-  getPatient
+  getPatient,
+  addEntryToPatient
 };
