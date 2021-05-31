@@ -1,17 +1,19 @@
 import React from "react";
 import { Field, Formik, Form } from "formik";
-import { Grid, Button } from "semantic-ui-react";
+import { Header, Grid, Button } from "semantic-ui-react";
 
-import { EntryWithoutId } from '../types';
+import { OccupationalHealthcareEntry } from '../types';
 import { useStateValue } from "../state";
-import { TextField, NumberField, DiagnosisSelection } from '../AddPatientModal/FormField';
+import { TextField, DiagnosisSelection } from '../AddPatientModal/FormField';
+
+type NewOccuHealthEntry = Omit<OccupationalHealthcareEntry, "id">;
 
 interface Props {
-  onSubmit: (values: EntryWithoutId) => void;
+  onSubmit: (values: NewOccuHealthEntry) => void;
   onCancel: () => void;
 }
 
-export const HealthcheckForm = ({ onSubmit, onCancel }: Props) => {
+export const OccuHealthEntryForm = ({ onSubmit, onCancel }: Props) => {
   const [{ diagnoses }] = useStateValue();
 
   return (
@@ -20,11 +22,15 @@ export const HealthcheckForm = ({ onSubmit, onCancel }: Props) => {
         description: "",
         date: "",
         specialist: "",
-        type: "HealthCheck",
-        healthCheckRating: 0,
+        type: "OccupationalHealthcare",
+        employerName: "",
+        sickLeave: {
+          startDate: "",
+          endDate: "",
+        }
       }}
       onSubmit={onSubmit}
-      validate={(values: EntryWithoutId) => {
+      validate={(values: NewOccuHealthEntry) => {
         const requiredError = "Field is required";
         const errors: { [field: string]: string } = {};
         if (!values.description) {
@@ -38,6 +44,9 @@ export const HealthcheckForm = ({ onSubmit, onCancel }: Props) => {
         }
         if (!values.type) {
           errors.type = requiredError;
+        }
+        if (!values.employerName) {
+          errors.employerName = requiredError;
         }
         return errors;
       }}
@@ -64,12 +73,31 @@ export const HealthcheckForm = ({ onSubmit, onCancel }: Props) => {
               component={TextField}
             />
             <Field
-              label="Health check rating"
-              name="healthCheckRating"
-              component={NumberField}
-              min={0}
-              max={3}
+              label="Employer"
+              placeholder="Employer"
+              name="employerName"
+              component={TextField}
             />
+            <Header size="small">Sick leave</Header>
+            <Grid>
+              <Grid.Column width={5}>
+                <Field
+                  label="Start Date"
+                  placeholder="YYYY-MM-DD"
+                  name="sickLeave.startDate"
+                  component={TextField}
+                />
+              </Grid.Column>
+              <Grid.Column floated="left" width={5}>
+                <Field
+                  label="End Date"
+                  placeholder="YYYY-MM-DD"
+                  name="sickLeave.endDate"
+                  component={TextField}
+                />
+              </Grid.Column>
+            </Grid>
+
             <DiagnosisSelection
               setFieldValue={setFieldValue}
               setFieldTouched={setFieldTouched}

@@ -9,6 +9,7 @@ import { apiBaseUrl } from "../constants";
 import EntryDetails from '../components/EntryDetails';
 import HealthcheckModal from '../HealthcheckModal';
 import HospitalEntryModal from '../HospitalEntryModal';
+import OccuHealthEntryModal from '../OccuHealthEntryModal';
 
 const PatientDetailsPage = () => {
   const [{ patients }, dispatch] = useStateValue();
@@ -17,7 +18,7 @@ const PatientDetailsPage = () => {
   const [error, setError] = React.useState<string | undefined>();
   const [healthcheckModalOpen, setHealthcheckModalOpen] = React.useState<boolean>(false);
   const [hospitalModalOpen, setHospitalModalOpen] = React.useState<boolean>(false);
-  // const [occuHealthModalOpen, setOccuHealthModalOpen] = React.useState<boolean>(false);
+  const [occuHealthModalOpen, setOccuHealthModalOpen] = React.useState<boolean>(false);
 
   const patientFromState = patients[id];
 
@@ -41,20 +42,14 @@ const PatientDetailsPage = () => {
   // Modal callbacks
   const openHealthcheckModal = (): void => setHealthcheckModalOpen(true);
   const openHospitalModal = (): void => setHospitalModalOpen(true);
-  // const openOccuHealthModal = (): void => setOccuHealthModalOpen(true);
+  const openOccuHealthModal = (): void => setOccuHealthModalOpen(true);
 
-  const closeHealthcheckModal = (): void => {
+  const closeModal = (): void => {
     setHealthcheckModalOpen(false);
-    setError(undefined);
-  };
-  const closeHospitalModal = (): void => {
     setHospitalModalOpen(false);
+    setOccuHealthModalOpen(false);
     setError(undefined);
   };
-  // const closeOccuHealthModal = (): void => {
-  //   setOccuHealthModalOpen(false);
-  //   setError(undefined);
-  // };
 
   const submitNewEntry = async (values: EntryWithoutId) => {
     try {
@@ -66,9 +61,7 @@ const PatientDetailsPage = () => {
         patient?.entries?.push(newEntry);
         dispatch(updatePatientData(patient));
       }
-      closeHealthcheckModal();
-      closeHospitalModal();
-      // closeOccuHealthModal();
+      closeModal();
     } catch (e) {
       console.error(e.response?.data || 'Unknown Error');
       setError(e.response?.data?.error || 'Unknown error');
@@ -79,6 +72,7 @@ const PatientDetailsPage = () => {
   if (!patient)
     return <div>Loading...</div>;
 
+  // Set gender icon
   const icon = patient.gender === 'male' ? 'mars'
     : patient.gender === 'female' ? 'venus'
       : 'genderless';
@@ -91,10 +85,9 @@ const PatientDetailsPage = () => {
         <div>Occupation: {patient?.occupation}</div>
 
         <Header as="h2">Entries</Header>
-        {/* TODO implement onClick callbacks */}
         <Button onClick={() => openHealthcheckModal()}>Add healthcheck entry</Button>
         <Button onClick={() => openHospitalModal()}>Add hospital entry</Button>
-        {/* <Button onClick={() => openOccuHealthModal()}>Add occupational healthcare entry</Button> */}
+        <Button onClick={() => openOccuHealthModal()}>Add occupational healthcare entry</Button>
 
         {patient?.entries?.map(entry => (<EntryDetails key={entry.id} entry={entry} />))}
       </Container>
@@ -103,13 +96,19 @@ const PatientDetailsPage = () => {
         modalOpen={healthcheckModalOpen}
         onSubmit={submitNewEntry}
         error={error}
-        onClose={closeHealthcheckModal}
+        onClose={closeModal}
       />
       <HospitalEntryModal
         modalOpen={hospitalModalOpen}
         onSubmit={submitNewEntry}
         error={error}
-        onClose={closeHospitalModal}
+        onClose={closeModal}
+      />
+      <OccuHealthEntryModal
+        modalOpen={occuHealthModalOpen}
+        onSubmit={submitNewEntry}
+        error={error}
+        onClose={closeModal}
       />
     </div>
   );

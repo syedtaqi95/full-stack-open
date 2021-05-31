@@ -2,12 +2,14 @@ import React from "react";
 import { Field, Formik, Form } from "formik";
 import { Header, Grid, Button } from "semantic-ui-react";
 
-import { EntryWithoutId } from '../types';
+import { HospitalEntry } from '../types';
 import { useStateValue } from "../state";
 import { TextField, DiagnosisSelection } from '../AddPatientModal/FormField';
 
+type NewHospitalEntry = Omit<HospitalEntry, "id">;
+
 interface Props {
-  onSubmit: (values: EntryWithoutId) => void;
+  onSubmit: (values: NewHospitalEntry) => void;
   onCancel: () => void;
 }
 
@@ -21,14 +23,13 @@ export const HospitalEntryForm = ({ onSubmit, onCancel }: Props) => {
         date: "",
         specialist: "",
         type: "Hospital",
-        diagnosisCodes: [],
         discharge: {
           date: "",
           criteria: "",
         }
       }}
       onSubmit={onSubmit}
-      validate={(values: EntryWithoutId) => {
+      validate={(values: NewHospitalEntry) => {
         const requiredError = "Field is required";
         const errors: { [field: string]: string } = {};
         if (!values.description) {
@@ -42,6 +43,9 @@ export const HospitalEntryForm = ({ onSubmit, onCancel }: Props) => {
         }
         if (!values.type) {
           errors.type = requiredError;
+        }
+        if (!values.discharge.criteria || !values.discharge.date) {
+          errors.discharge = requiredError;
         }
         return errors;
       }}
@@ -68,18 +72,24 @@ export const HospitalEntryForm = ({ onSubmit, onCancel }: Props) => {
               component={TextField}
             />
             <Header size="small">Discharge</Header>
-            <Field
-              label="Date"
-              placeholder="YYYY-MM-DD"
-              name="discharge.date"
-              component={TextField}
-            />
-            <Field
-              label="Criteria"
-              placeholder="Criteria"
-              name="discharge.criteria"
-              component={TextField}
-            />
+            <Grid>
+              <Grid.Column width={5}>
+                <Field
+                  label="Date"
+                  placeholder="YYYY-MM-DD"
+                  name="discharge.date"
+                  component={TextField}
+                />
+              </Grid.Column>
+              <Grid.Column floated="left" width={5}>
+                <Field
+                  label="Criteria"
+                  placeholder="Criteria"
+                  name="discharge.criteria"
+                  component={TextField}
+                />
+              </Grid.Column>
+            </Grid>
             <DiagnosisSelection
               setFieldValue={setFieldValue}
               setFieldTouched={setFieldTouched}
@@ -103,8 +113,6 @@ export const HospitalEntryForm = ({ onSubmit, onCancel }: Props) => {
                 </Button>
               </Grid.Column>
             </Grid>
-
-
           </Form>
         );
       }}
