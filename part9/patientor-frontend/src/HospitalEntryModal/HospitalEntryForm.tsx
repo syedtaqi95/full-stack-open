@@ -1,17 +1,17 @@
 import React from "react";
 import { Field, Formik, Form } from "formik";
-import { Grid, Button } from "semantic-ui-react";
+import { Header, Grid, Button } from "semantic-ui-react";
 
 import { EntryWithoutId } from '../types';
 import { useStateValue } from "../state";
-import { TextField, NumberField, DiagnosisSelection } from '../AddPatientModal/FormField';
+import { TextField, DiagnosisSelection } from '../AddPatientModal/FormField';
 
 interface Props {
   onSubmit: (values: EntryWithoutId) => void;
   onCancel: () => void;
 }
 
-export const HealthcheckForm = ({ onSubmit, onCancel }: Props) => {
+export const HospitalEntryForm = ({ onSubmit, onCancel }: Props) => {
   const [{ diagnoses }] = useStateValue();
 
   return (
@@ -20,9 +20,12 @@ export const HealthcheckForm = ({ onSubmit, onCancel }: Props) => {
         description: "",
         date: "",
         specialist: "",
-        type: "HealthCheck",
-        healthCheckRating: 0,
+        type: "Hospital",
         diagnosisCodes: [],
+        discharge: {
+          date: "",
+          criteria: "",
+        }
       }}
       onSubmit={onSubmit}
       validate={(values: EntryWithoutId) => {
@@ -64,12 +67,18 @@ export const HealthcheckForm = ({ onSubmit, onCancel }: Props) => {
               name="specialist"
               component={TextField}
             />
+            <Header size="small">Discharge</Header>
             <Field
-              label="Health check rating"
-              name="healthCheckRating"
-              component={NumberField}
-              min={0}
-              max={3}
+              label="Date"
+              placeholder="YYYY-MM-DD"
+              name="discharge.date"
+              component={TextField}
+            />
+            <Field
+              label="Criteria"
+              placeholder="Criteria"
+              name="discharge.criteria"
+              component={TextField}
             />
             <DiagnosisSelection
               setFieldValue={setFieldValue}
@@ -94,6 +103,8 @@ export const HealthcheckForm = ({ onSubmit, onCancel }: Props) => {
                 </Button>
               </Grid.Column>
             </Grid>
+
+
           </Form>
         );
       }}

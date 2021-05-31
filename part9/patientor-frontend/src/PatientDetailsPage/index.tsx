@@ -8,39 +8,18 @@ import { Patient, Entry, EntryWithoutId } from "../types";
 import { apiBaseUrl } from "../constants";
 import EntryDetails from '../components/EntryDetails';
 import HealthcheckModal from '../HealthcheckModal';
+import HospitalEntryModal from '../HospitalEntryModal';
 
 const PatientDetailsPage = () => {
   const [{ patients }, dispatch] = useStateValue();
   const { id } = useParams<{ id: string }>();
   const [patient, setPatient] = useState<Patient | undefined>();
-  const [modalOpen, setModalOpen] = React.useState<boolean>(false);
   const [error, setError] = React.useState<string | undefined>();
+  const [healthcheckModalOpen, setHealthcheckModalOpen] = React.useState<boolean>(false);
+  const [hospitalModalOpen, setHospitalModalOpen] = React.useState<boolean>(false);
+  // const [occuHealthModalOpen, setOccuHealthModalOpen] = React.useState<boolean>(false);
 
   const patientFromState = patients[id];
-
-  const openModal = (): void => setModalOpen(true);
-
-  const closeModal = (): void => {
-    setModalOpen(false);
-    setError(undefined);
-  };
-
-  const submitNewEntry = async (values: EntryWithoutId) => {
-    try {
-      const { data: newEntry } = await axios.post<Entry>(
-        `${apiBaseUrl}/patients/${id}/entries`,
-        values
-      );
-      if (patient) {
-        patient?.entries?.push(newEntry);
-        dispatch(updatePatientData(patient));
-      }
-      closeModal();
-    } catch (e) {
-      console.error(e.response?.data || 'Unknown Error');
-      setError(e.response?.data?.error || 'Unknown error');
-    }
-  };
 
   // Get patient details from server if not done before, and update state
   useEffect(() => {
@@ -59,6 +38,43 @@ const PatientDetailsPage = () => {
     }
   }, [patientFromState]);
 
+  // Modal callbacks
+  const openHealthcheckModal = (): void => setHealthcheckModalOpen(true);
+  const openHospitalModal = (): void => setHospitalModalOpen(true);
+  // const openOccuHealthModal = (): void => setOccuHealthModalOpen(true);
+
+  const closeHealthcheckModal = (): void => {
+    setHealthcheckModalOpen(false);
+    setError(undefined);
+  };
+  const closeHospitalModal = (): void => {
+    setHospitalModalOpen(false);
+    setError(undefined);
+  };
+  // const closeOccuHealthModal = (): void => {
+  //   setOccuHealthModalOpen(false);
+  //   setError(undefined);
+  // };
+
+  const submitNewEntry = async (values: EntryWithoutId) => {
+    try {
+      const { data: newEntry } = await axios.post<Entry>(
+        `${apiBaseUrl}/patients/${id}/entries`,
+        values
+      );
+      if (patient) {
+        patient?.entries?.push(newEntry);
+        dispatch(updatePatientData(patient));
+      }
+      closeHealthcheckModal();
+      closeHospitalModal();
+      // closeOccuHealthModal();
+    } catch (e) {
+      console.error(e.response?.data || 'Unknown Error');
+      setError(e.response?.data?.error || 'Unknown error');
+    }
+  };  
+
   // Render loading screen if patient data is still loading
   if (!patient)
     return <div>Loading...</div>;
@@ -76,18 +92,24 @@ const PatientDetailsPage = () => {
 
         <Header as="h2">Entries</Header>
         {/* TODO implement onClick callbacks */}
-        <Button onClick={() => openModal()}>Add healthcheck entry</Button>
-        <Button onClick={() => console.log('clicked')}>Add hospital entry</Button>
-        <Button onClick={() => console.log('clicked')}>Add occupational healthcare entry</Button>
+        <Button onClick={() => openHealthcheckModal()}>Add healthcheck entry</Button>
+        <Button onClick={() => openHospitalModal()}>Add hospital entry</Button>
+        {/* <Button onClick={() => openOccuHealthModal()}>Add occupational healthcare entry</Button> */}
 
         {patient?.entries?.map(entry => (<EntryDetails key={entry.id} entry={entry} />))}
       </Container>
 
       <HealthcheckModal
-        modalOpen={modalOpen}
+        modalOpen={healthcheckModalOpen}
         onSubmit={submitNewEntry}
         error={error}
-        onClose={closeModal}
+        onClose={closeHealthcheckModal}
+      />
+      <HospitalEntryModal
+        modalOpen={hospitalModalOpen}
+        onSubmit={submitNewEntry}
+        error={error}
+        onClose={closeHospitalModal}
       />
     </div>
   );
